@@ -449,6 +449,23 @@ def main():
     plot_hysteresis_loop(params, '样品', 
                         os.path.join(output_dir, 'hysteresis_loop.png'))
     
+    # 保存磁滞回线数据
+    hysteresis_df = pd.DataFrame({
+        '测量点': ['正向饱和点S', '正向剩磁点R', '正向矫顽力点D', 
+                   '反向饱和点S\'', '反向剩磁点R\'', '反向矫顽力点D\''],
+        'U1(V)': [data.sample_hysteresis['U1S'], data.sample_hysteresis['U1R'], data.sample_hysteresis['U1D'],
+                  data.sample_hysteresis['U1S_prime'], data.sample_hysteresis['U1R_prime'], data.sample_hysteresis['U1D_prime']],
+        'U2(V)': [data.sample_hysteresis['U2S'], data.sample_hysteresis['U2R'], data.sample_hysteresis['U2D'],
+                  data.sample_hysteresis['U2S_prime'], data.sample_hysteresis['U2R_prime'], data.sample_hysteresis['U2D_prime']],
+        'H(A/m)': [params['H_S'], params['H_R'], params['H_D'],
+                   params['H_S_prime'], params['H_R_prime'], params['H_D_prime']],
+        'B(T)': [params['Bs'], params['Br'], 0.0,
+                 -params['Bs_prime'], -params['Br_prime'], 0.0]
+    })
+    hysteresis_path = os.path.join(results_dir, 'hysteresis_results.csv')
+    hysteresis_df.to_csv(hysteresis_path, index=False)
+    print(f"✓ 已保存: {hysteresis_path}")
+    
     # -------------------- 结果汇总 --------------------
     print("\n" + "-" * 50)
     print("【三】结果汇总")
